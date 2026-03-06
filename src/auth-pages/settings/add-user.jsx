@@ -4,7 +4,7 @@ import { Button } from '../../components/ui/button'
 import { Label } from '../../components/ui/label'
 import { Input } from '../../components/ui/input'
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectGroup, SelectItem, SelectLabel } from "../../components/ui/select";
-import { fetchFacilities, newUser, updateUser } from '../../utils/users'
+//import { fetchFacilities, newUser, updateUser } from '../../utils/users'
 import { AppContext } from '../../context/AppContext'
 import ButtonLoader from '../../components/button-loader'
 import Location from '../../components/location';
@@ -60,8 +60,8 @@ const AddUser = ({ usr }) => {
                 data.id = usr?.id
             }
 
-            usr ? updateUser(token, data, setSuccess, setError, setSubmitting) :
-            newUser(token, data, setSuccess, setError, setSubmitting)
+            //usr ? updateUser(token, data, setSuccess, setError, setSubmitting) :
+            //newUser(token, data, setSuccess, setError, setSubmitting)
         }
     }
 
@@ -87,7 +87,7 @@ const AddUser = ({ usr }) => {
     }
 
     useEffect(() => {
-        fetchFacilities(token, setFacilities, setError, setLoading)
+        //fetchFacilities(token, setFacilities, setError, setLoading)
     }, [])
 
     return (

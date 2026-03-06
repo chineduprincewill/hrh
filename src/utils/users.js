@@ -149,12 +149,12 @@ export const getUniqueBy = (arr, prop) => {
 };
 
 
-export const fetchFacilities = async ( token, setFacilities, setError, setLoading ) => {
+export const fetchOffices = async ( token, setOffices, setError, setLoading ) => {
 
     setLoading(true);
     try{
         //console.log(token)
-        const response  = await axios.get(`${API_BASE}/facilities`,
+        const response  = await axios.get(`${API_BASE}/offices`,
             {
                 headers: { 
                     'Accept' : 'application/json', 
@@ -164,7 +164,7 @@ export const fetchFacilities = async ( token, setFacilities, setError, setLoadin
             }
         );    
         //console.log(response.data);
-        setFacilities(response.data);
+        setOffices(response.data);
     }
     catch (err) {
         if (!err?.response) {
@@ -179,13 +179,13 @@ export const fetchFacilities = async ( token, setFacilities, setError, setLoadin
 }
 
 
-export const newFacility = async (token, data, setSuccess, setError, setSaving) => {
+export const newOffice = async (token, data, setSuccess, setError, setSaving) => {
     setSaving(true);
     try {
         if (!token || typeof token !== "string") {
             throw new Error("missing_token");
         }
-        const response = await axios.post(`${API_BASE}/facility`, data, {
+        const response = await axios.post(`${API_BASE}/office`, data, {
             headers: {
                 Accept: "application/json",
                 // Remove Content-Type for GET — may trigger preflight unnecessarily
@@ -212,6 +212,79 @@ export const newFacility = async (token, data, setSuccess, setError, setSaving) 
         }
     } finally {
         setSaving(false);
+    }
+};
+
+
+export const updateCoordinates = async (token, data, setSuccess, setError, setSaving) => {
+    setSaving(true);
+    try {
+        if (!token || typeof token !== "string") {
+            throw new Error("missing_token");
+        }
+        const response = await axios.post(`${API_BASE}/coordinates`, data, {
+            headers: {
+                Accept: "application/json",
+                // Remove Content-Type for GET — may trigger preflight unnecessarily
+                Authorization: `Bearer ${token.trim()}`,
+            },
+            // withCredentials: true, // uncomment if the backend expects cookies
+        });
+        console.log(response.data);
+        setSuccess(response.data);
+    } catch (err) {
+        if (err.message === "missing_token") {
+            setError("Authorization token not provided");
+        } else if (!err?.response) {
+            setError("No response from server");
+        } else {
+            // Prefer server message, normalize to string
+            const msg =
+            err.response.data?.message ||
+            err.response.data?.error ||
+            JSON.stringify(err.response.data) ||
+            `Request failed (${err.response.status})`;
+            console.log("Server response:", err.response);
+            setError(msg);
+        }
+    } finally {
+        setSaving(false);
+    }
+};
+
+export const fetchCoordinates = async (token, setCoordinates, setError, setFetching) => {
+    setFetching(true);
+    try {
+        if (!token || typeof token !== "string") {
+            throw new Error("missing_token");
+        }
+        const response = await axios.get(`${API_BASE}/coordinates`, {
+            headers: {
+                Accept: "application/json",
+                // Remove Content-Type for GET — may trigger preflight unnecessarily
+                Authorization: `Bearer ${token.trim()}`,
+            },
+            // withCredentials: true, // uncomment if the backend expects cookies
+        });
+        console.log(response.data);
+        setCoordinates(response.data);
+    } catch (err) {
+        if (err.message === "missing_token") {
+            setError("Authorization token not provided");
+        } else if (!err?.response) {
+            setError("No response from server");
+        } else {
+            // Prefer server message, normalize to string
+            const msg =
+            err.response.data?.message ||
+            err.response.data?.error ||
+            JSON.stringify(err.response.data) ||
+            `Request failed (${err.response.status})`;
+            console.log("Server response:", err.response);
+            setError(msg);
+        }
+    } finally {
+        setFetching(false);
     }
 };
 

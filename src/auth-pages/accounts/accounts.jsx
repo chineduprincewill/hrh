@@ -46,6 +46,12 @@ const Accounts = () => {
             enableColumnFilter: true,
         },
         {
+            accessorKey: 'office_location',
+            header: 'Office location',
+            enableSorting: true,
+            enableColumnFilter: true,
+        },
+        {
             id: 'actions',
             cell: ({ row }) => {
               const acct = row.original; 

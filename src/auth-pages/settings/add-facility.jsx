@@ -6,7 +6,7 @@ import { Label } from '../../components/ui/label';
 import ButtonLoader from '../../components/button-loader';
 import { Button } from '../../components/ui/button';
 import { Input } from '../../components/ui/input';
-import { newFacility } from '../../utils/users';
+//import { newFacility } from '../../utils/users';
 
 const AddFacility = () => {
 
@@ -25,7 +25,7 @@ const AddFacility = () => {
             lganame:lga,
             facility
         }
-        newFacility(token, data, setSuccess, setError, setSaving)
+        //newFacility(token, data, setSuccess, setError, setSaving)
     }
 
     if(success){

@@ -25,7 +25,8 @@ const UserForms = () => {
             id: frm?.form_id, 
             title: frm?.title,
             permissions: frm?.permissions,
-            uniqueid: frm?.unique_id
+            uniqueid: frm?.unique_id,
+            form_type: frm?.form_type
           } 
         });
     };
@@ -33,6 +34,8 @@ const UserForms = () => {
     useEffect(() => {
         user && fetchFormAssignments(token, { email }, setForms, setError, setFetching)
     }, [])
+
+    console.log(forms);
     
     return (
         <div className='w-full p-4 space-y-4'>

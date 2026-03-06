@@ -16,6 +16,8 @@ const NewForm = ({ frm }) => {
     const [title, setTitle] = useState(frm && frm.title);
     const [description, setDescription] = useState(frm && frm.description);
     const [status, setStatus] = useState(frm && frm.status);
+    const [auto_assign, setAuto_assign] = useState(frm && frm.auto_assign);
+    const [form_type, setForm_type] = useState(frm && frm.form_type)
     const [saving, setSaving] = useState(false);
     const [error, setError] = useState();
     const [success, setSuccess] = useState();
@@ -26,6 +28,8 @@ const NewForm = ({ frm }) => {
         const data = {
             title, 
             description, 
+            auto_assign,
+            form_type,
             status
         }
 
@@ -82,9 +86,45 @@ const NewForm = ({ frm }) => {
                         <Label htmlFor="title-1">Description</Label>
                         <Textarea 
                             value={description}
-                            placeholder="Enter request..."
+                            placeholder="Enter description..."
                             onChange={(e) => setDescription(e.target.value)}
                         />
+                    </div>
+                    <div className="grid gap-3 w-full">
+                        <Label htmlFor="title-1">Auto assign form</Label>
+                        <Select
+                            value={auto_assign} // Reflects the current state
+                            onValueChange={setAuto_assign} // Updates the state on selection
+                        >
+                            <SelectTrigger className="w-full">
+                                <SelectValue placeholder="Auto assign form?" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectGroup>
+                                <SelectLabel>Auto assign form?</SelectLabel>
+                                <SelectItem value="Yes">Yes</SelectItem>
+                                <SelectItem value="No">No</SelectItem>
+                                </SelectGroup>
+                            </SelectContent>
+                        </Select>
+                    </div>
+                    <div className="grid gap-3 w-full">
+                        <Label htmlFor="title-1">Form type</Label>
+                        <Select
+                            value={form_type} // Reflects the current state
+                            onValueChange={setForm_type} // Updates the state on selection
+                        >
+                            <SelectTrigger className="w-full">
+                                <SelectValue placeholder="select form type..." />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectGroup>
+                                <SelectLabel>Form type</SelectLabel>
+                                <SelectItem value="default">default</SelectItem>
+                                <SelectItem value="custom">custom</SelectItem>
+                                </SelectGroup>
+                            </SelectContent>
+                        </Select>
                     </div>
                     <div className="grid gap-3 w-full">
                         <Label htmlFor="title-1">Status</Label>

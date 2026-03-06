@@ -6,7 +6,7 @@ import SkeletonComponent from '../../components/skeleton-component';
 import DataTable from '../../components/data-table';
 import { toast } from 'sonner';
 
-const FormRecords = ({ formid, perms, setEditinfo }) => {
+const FormRecords = ({ formid, perms, setEditinfo, setRecorded }) => {
 
     const { token, record, refreshRecord } = useContext(AppContext);
     const [formdata, setFormdata] = useState();
@@ -103,6 +103,10 @@ const FormRecords = ({ formid, perms, setEditinfo }) => {
                 descriptionClassName: "!text-red-700",
             });
     }
+
+    useEffect(() => {
+        formdata && formdata[0]?.in_date === new Date().toDateString() ? setRecorded(Date.now()) : setRecorded(null);
+    }, [fetching])
 
     useEffect(() => {
         fetchFormdata(token, { formid }, setFormdata, setError, setFetching)

@@ -1,21 +1,26 @@
 import React, { useContext, useEffect, useMemo, useState } from 'react'
 //import { useAuth } from '../../hooks/useAuth'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../../components/ui/tabs';
-import { Hospital, LockKeyhole, User } from 'lucide-react';
+import { Hospital, House, LockKeyhole, MapPinHouse, User } from 'lucide-react';
 import Users from './Users';
 import Facilities from './Facilities';
 import { fetchGeodata, fetchUsers } from '../../utils/users';
 import SkeletonComponent from '../../components/skeleton-component';
 import { AppContext } from '../../context/AppContext';
 import Security from './security';
+import OfficeCoordinates from './offices';
+import Offices from './offices';
+import OfficeCordinates from './office-cordinates';
 
 const Settings = () => {
 
-  const { token, record } = useContext(AppContext);
+  const { token, user, record } = useContext(AppContext);
   const [error, setError] = useState();
   const [loading, setLoading] = useState(false);
   const [geodata, setGeodata] = useState([]);
   const [fetching, setFetching] = useState(false);
+
+  const role = JSON.parse(user)?.role;
 
   return (
     <div className='w-full p-4'>
@@ -31,16 +36,40 @@ const Settings = () => {
             </div>
         )}
         <Tabs defaultValue="security">
-            <TabsList className="gap-4">
+            <TabsList className="gap-4 w-full md:max-w-max">
                 <TabsTrigger value="security">
                     <div className='flex gap-1 items-center'>
                         <LockKeyhole size={16} />
-                        <span>Security</span>
+                        <span className='hidden md:block'>Security</span>
                     </div>
                 </TabsTrigger>
+            {
+                role === 'admin' &&
+                <>
+                    <TabsTrigger value="offices">
+                        <div className='flex gap-1 items-center'>
+                            <House size={16} />
+                            <span className='hidden md:block'>Offices</span>
+                        </div>
+                    </TabsTrigger>
+                    <TabsTrigger value="office-cordinates">
+                        <div className='flex gap-1 items-center'>
+                            <MapPinHouse size={16} />
+                            <span className='hidden md:block'>Office cordinates</span>
+                        </div>
+                    </TabsTrigger>
+                </>
+                
+            }
             </TabsList>
             <TabsContent value="security">
               <Security />
+            </TabsContent>
+            <TabsContent value="offices">
+              <Offices />
+            </TabsContent>
+            <TabsContent value="office-cordinates">
+              <OfficeCordinates />
             </TabsContent>
         </Tabs>
     </div>

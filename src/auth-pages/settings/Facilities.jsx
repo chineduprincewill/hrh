@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from 'react'
 import { Button } from '../../components/ui/button'
 import { Edit, Plus } from 'lucide-react'
 import { AppContext } from '../../context/AppContext'
-import { fetchFacilities } from '../../utils/users'
+//import { fetchFacilities } from '../../utils/users'
 import DataTable from '../../components/data-table'
 import SkeletonComponent from '../../components/skeleton-component'
 import { Dialog, DialogTrigger } from '../../components/ui/dialog'
@@ -65,7 +65,7 @@ const Facilities = () => {
     ]
 
     useEffect(() => {
-        fetchFacilities(token, setFacilities, setError, setLoading)
+        //fetchFacilities(token, setFacilities, setError, setLoading)
     }, [record])
 
     return (

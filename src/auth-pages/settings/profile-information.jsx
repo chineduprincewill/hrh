@@ -11,6 +11,7 @@ const ProfileInformation = ({ profile }) => {
     const [role, setRole] = useState(profile && profile?.role ? profile?.role : '');
     const [directorate, setDirectorate] = useState(profile && profile?.directorate ? profile?.directorate : '');
     const [unit, setUnit] = useState(profile && profile?.unit ? profile?.unit : '');
+    const [office_location, setOffice_location] = useState(profile && profile?.office_location ? profile?.office_location : '')
 
     return (
         <form className='w-full grid gap-4'>
@@ -62,6 +63,16 @@ const ProfileInformation = ({ profile }) => {
                     value={unit}
                     placeholder="Enter state..."
                     onChange={(e) => setUnit(e.target.value)} // Updates the state on selection
+                    readOnly
+                    className="w-full"
+                />
+            </div>
+            <div className="grid w-full gap-3">
+                <Label htmlFor="title-1">Office location</Label>
+                <Input 
+                    value={office_location}
+                    placeholder="Enter state..."
+                    onChange={(e) => setOffice_location(e.target.value)} // Updates the state on selection
                     readOnly
                     className="w-full"
                 />

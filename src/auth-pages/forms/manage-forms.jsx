@@ -29,6 +29,14 @@ const ManageForms = () => {
         {
             title: "status",
             placeholder: "filter by status..."
+        },
+        {
+            title: "auto_assign",
+            placeholder: "filter by auto assign..."
+        },
+        {
+            title: "form_type",
+            placeholder: "filter by form type..."
         }
     ]
 
@@ -37,6 +45,18 @@ const ManageForms = () => {
             accessorKey: 'title',
             header: 'Subject',
             enableSorting: true,
+        },
+        {
+            accessorKey: 'auto_assign',
+            header: 'Auto assign',
+            enableSorting: true,
+            enableColumnFilter: true,
+        },
+        {
+            accessorKey: 'form_type',
+            header: 'Form type',
+            enableSorting: true,
+            enableColumnFilter: true,
         },
         {
             accessorKey: 'status',

@@ -36,7 +36,9 @@ const DataTable = ({ data, columns, filterArrs }) => {
                 <div className='grid md:flex md:flex-wrap md:items-center gap-4'>
                 {
                     filterArrs.map((item, index) => (
-                        <div key={index} className='w-full md:w-1/6'>
+                        <div key={index} className={`
+                            w-full ${filterArrs.length > 4 ? 'md:w-1/6' : (filterArrs.length > 2 && 'md:w-1/4')}`
+                        }>
                             <FilterInput table={table} param={item.title} placeholder={item.placeholder} />
                         </div>
                     ))
@@ -72,7 +74,7 @@ const DataTable = ({ data, columns, filterArrs }) => {
                                     {row.getVisibleCells().map((cell) => (
                                         <TableCell 
                                             key={cell.id}
-                                            className="h-16"
+                                            className="h-16 text-nowrap"
                                         >
                                             {flexRender(
                                                 cell.column.columnDef.cell,

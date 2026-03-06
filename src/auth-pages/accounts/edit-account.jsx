@@ -15,6 +15,7 @@ const EditAccount = ({ acct }) => {
     const [selectedRole, setSelectedRole] = useState(acct.role);
     const [selectedDirectorate, setSelectedDirectorate] = useState(acct.directorate);
     const [selectedUnit, setSelectedUnit] = useState(acct.unit);
+    const [office_location, setOffice_location] = useState(acct.office_location);
     const [units, setUnits] = useState([]);
     const [success, setSuccess] = useState();
     const [error, setError] = useState();
@@ -44,10 +45,11 @@ const EditAccount = ({ acct }) => {
                 id: acct.id, 
                 role: selectedRole, 
                 directorate: selectedDirectorate, 
-                unit: selectedUnit
+                unit: selectedUnit,
+                office_location
             }
             
-            //console.log(data);
+            console.log(data);
             updateUser(token, data, setSuccess, setError, setUpdating)
         }
     }
@@ -144,6 +146,30 @@ const EditAccount = ({ acct }) => {
                         </SelectGroup>
                     </SelectContent>
                 </Select>
+                <div className="grid gap-3">
+                <Label htmlFor="role-1">Office location</Label>
+                <Select
+                    value={office_location} // Reflects the current state
+                    onValueChange={setOffice_location} // Updates the state on selection
+                    required
+                >
+                    <SelectTrigger className="w-full">
+                        <SelectValue placeholder="Select a office location" />
+                    </SelectTrigger>
+                    <SelectContent>
+                        <SelectGroup>
+                        <SelectLabel>Office location</SelectLabel>
+                        <SelectItem value="Abuja">Abuja</SelectItem>
+                        <SelectItem value="Lagos">Lagos</SelectItem>
+                        <SelectItem value="Benue">Benue</SelectItem>
+                        <SelectItem value="Plateau">Plateau</SelectItem>
+                        <SelectItem value="Ogun">Ogun</SelectItem>
+                        <SelectItem value="Oyo">Oyo</SelectItem>
+                        <SelectItem value="Ondo">Ondo</SelectItem>
+                        </SelectGroup>
+                    </SelectContent>
+                </Select>
+                </div>
                 </div>
             </div>
             <DialogFooter>

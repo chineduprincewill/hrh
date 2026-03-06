@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { AppContext } from '../../context/AppContext';
-import { fetchFacilities } from '../../utils/users';
+//import { fetchFacilities } from '../../utils/users';
 import { Label } from '../../components/ui/label';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '../../components/ui/select';
 
@@ -25,7 +25,7 @@ const FacilitySelect = ({ lga, facility, setFacility }) => {
     }, [lga])
 
     useEffect(() => {
-        fetchFacilities(token, setFacilities, setError, setLoading)
+        //fetchFacilities(token, setFacilities, setError, setLoading)
     }, [])
 
     console.log(lgaFacilities);
