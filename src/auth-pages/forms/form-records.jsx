@@ -8,7 +8,7 @@ import { toast } from 'sonner';
 
 const FormRecords = ({ formid, perms, setEditinfo, setRecorded }) => {
 
-    const { token, record, refreshRecord } = useContext(AppContext);
+    const { token, user, record, refreshRecord } = useContext(AppContext);
     const [formdata, setFormdata] = useState();
     const [error, setError] = useState();
     const [fetching, setFetching] = useState(false);
@@ -16,9 +16,11 @@ const FormRecords = ({ formid, perms, setEditinfo, setRecorded }) => {
     const [deleting, setDeleting] = useState();
     const [success, setSuccess] = useState(false);
 
+    const targetEmail = JSON.parse(user).email;
+
     const columns = [
         {
-            id: 'actions',
+            accessorKey: 'actions',
             cell: ({ row }) => {
                 const form = row.original; 
                 const [isOpen, setIsOpen] = useState(false);
@@ -104,8 +106,36 @@ const FormRecords = ({ formid, perms, setEditinfo, setRecorded }) => {
             });
     }
 
+    const checkRecordByEmail = (records, email) => {
+        // Find the first record with matching email
+        const matchingRecord = records.find(record => record.email === email);
+        
+        if (matchingRecord) {
+          // Get today's date in the same format as your in_date field
+          // Adjust this based on your actual date format
+          const today = new Date().toDateString(); // YYYY-MM-DD format
+          
+          // Check if the matching record's in_date equals today's date
+          if (matchingRecord.in_date === today) {
+            // If in_date equals today's date
+            setRecorded(Date.now());
+            // Add any additional logic here
+          } else {
+            // If in_date doesn't equal today's date
+            setRecorded(null);
+            // Add any additional logic here
+          }
+        } else {
+          // Handle case when no record with matching email is found
+          console.log(`No record found with email: ${email}`);
+          setRecorded(null);
+          // Add any additional logic here
+        }
+    };
+
     useEffect(() => {
-        formdata && formdata[0]?.in_date === new Date().toDateString() ? setRecorded(Date.now()) : setRecorded(null);
+        //formdata && formdata[0]?.in_date === new Date().toDateString() ? setRecorded(Date.now()) : setRecorded(null);
+        formdata && checkRecordByEmail(formdata, targetEmail);
     }, [fetching])
 
     useEffect(() => {

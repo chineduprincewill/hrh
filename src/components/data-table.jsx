@@ -4,6 +4,7 @@ import { flexRender, getCoreRowModel, getFilteredRowModel, getPaginationRowModel
 import React, { useState } from 'react'
 import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from 'lucide-react';
 import FilterInput from './filter-input';
+import ExportButton from './export-button';
 
 const DataTable = ({ data, columns, filterArrs }) => {
     const [sorting, setSorting] = useState([]);
@@ -30,7 +31,7 @@ const DataTable = ({ data, columns, filterArrs }) => {
     });
 
     return (
-        <div className='space-y-4'>
+        <div className='space-y-2'>
             {/** Global filter */}
             <div className='grid md:flex md:items-start md:justify-between gap-2'>
                 <div className='grid md:flex md:flex-wrap md:items-center gap-4'>
@@ -47,6 +48,12 @@ const DataTable = ({ data, columns, filterArrs }) => {
                 <div className='text-sm text-nowrap'>
                     Showing {table.getRowModel().rows.length} of {data.length} rows
                 </div>
+            </div>
+            <div className='w-full flex justify-end'>
+                {/* Export Button */}
+                <ExportButton
+                    table={table}
+                />
             </div>
             {/** Table */}
             <div className='rounded-md overflow-x-scroll md:overflow-hidden'>

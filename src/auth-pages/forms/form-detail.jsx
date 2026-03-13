@@ -9,7 +9,7 @@ import CustomFormEntry from './custom-form-entry';
 const FormDetail = () => {
 
     const location = useLocation();
-    const { id, title, permissions, uniqueid, form_type } = location.state || {};
+    const { id, title, permissions, uniqueid, form_type, email } = location.state || {};
     const navigate = useNavigate();
     const [active, setActive] = useState('records')
     const [editinfo, setEditinfo] = useState();

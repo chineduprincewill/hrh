@@ -12,6 +12,9 @@ import { AppContext } from '../../context/AppContext';
 import PasswordUpdate from './password-update';
 import { fetchUserRole } from '../../utils/roles';
 import SkeletonComponent from '../../components/skeleton-component';
+import OfficeLocationUpdate from './office-location-update';
+import { Alert, AlertTitle } from '../../components/ui/alert';
+import { InfoIcon } from 'lucide-react';
 
 const Security = () => {
 
@@ -47,7 +50,22 @@ const Security = () => {
                         </CardContent>
                     </Card>
                 </div>
-                <div className='col-span-1'>
+                <div className='grid gap-4 col-span-1'>
+                    <Card>
+                        <CardHeader>
+                            <CardTitle>Update office location</CardTitle>
+                            <CardDescription>
+                            Select your office to update your profile
+                            </CardDescription>
+                        </CardHeader>
+                        <CardContent className="grid gap-4">
+                            <Alert className="flex items-center w-full md:max-w-max border-amber-200 bg-amber-50 text-amber-900 dark:border-amber-900 dark:bg-amber-950 dark:text-amber-50">
+                                <InfoIcon size={16} />
+                                <AlertTitle className="leading-relaxed">Ensure you update your office location so as to effectively use the attendance feature!</AlertTitle>
+                            </Alert>
+                            <OfficeLocationUpdate />
+                        </CardContent>
+                    </Card>
                     <Card>
                         <CardHeader>
                             <CardTitle>Password update</CardTitle>

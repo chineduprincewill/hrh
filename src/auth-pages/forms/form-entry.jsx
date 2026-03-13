@@ -182,6 +182,9 @@ const FormEntry = ({ formid, uniqueid, setActive, editinfo }) => {
                                     <PopoverContent className="w-full p-0" align="start">
                                         <Calendar
                                             mode="single"
+                                            captionLayout="dropdown"
+                                            fromYear={1900}
+                                            toYear={new Date().getFullYear() + 30} // 10 years in future
                                             selected={formdata[field.fieldName] ? new Date(formdata[field.fieldName]) : undefined}
                                             onSelect={(date) => handleInputChange(field.fieldName, date)}    
                                         />

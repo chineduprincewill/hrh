@@ -16,6 +16,7 @@ import {
   Logs,
   User2Icon,
   FileCog,
+  Database,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "../../hooks/useAuth";
@@ -37,12 +38,14 @@ const Sidebar = ({ isOpen, onClose, isCollapsed, onCollapsedChange }) => {
         { href: "/accounts", label: "Accounts", icon: User2Icon },
         { href: "/manage-forms", label: "Manage forms", icon: FileCog },
         { href: "/forms", label: "Forms", icon: MessageSquareText },
+        { href: "/records", label: "Records", icon: Database },
         { href: "/settings", label: "Settings", icon: Settings },
     ];
 
     const userNavItems = [
         { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
         { href: "/forms", label: "Forms", icon: MessageSquareText },
+        { href: "/records", label: "Records", icon: Database },
         { href: "/settings", label: "Settings", icon: Settings },
     ];
 

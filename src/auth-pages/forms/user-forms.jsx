@@ -20,13 +20,15 @@ const UserForms = () => {
     const email = JSON.parse(user)?.email;
 
     const handleNavigation = (frm) => {
+        console.log(frm);
         navigate('/form-detail', { 
           state: { 
             id: frm?.form_id, 
             title: frm?.title,
             permissions: frm?.permissions,
             uniqueid: frm?.unique_id,
-            form_type: frm?.form_type
+            form_type: frm?.form_type,
+            email: frm?.email
           } 
         });
     };

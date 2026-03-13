@@ -20,6 +20,7 @@ import SignUp from "./public/sign-up";
 import ManageForms from "./auth-pages/forms/manage-forms";
 import UserForms from "./auth-pages/forms/user-forms";
 import FormDetail from "./auth-pages/forms/form-detail";
+import UserRecords from "./auth-pages/user-records/user-records";
 
 function App() {
 
@@ -53,6 +54,7 @@ function App() {
                     <Route path="/form-detail" element={<ProtectedRoute><FormDetail /></ProtectedRoute>} />
                     <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
                     <Route path="/activity-log" element={<ProtectedRoute><Log /></ProtectedRoute>} />
+                    <Route path="/records" element={<ProtectedRoute><UserRecords /></ProtectedRoute>} />
                   </Route>
               </Routes>
             </Router>
