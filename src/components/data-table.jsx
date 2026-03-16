@@ -74,7 +74,7 @@ const DataTable = ({ data, columns, filterArrs }) => {
                             </TableRow>)
                         })}
                     </TableHeader>
-                    <TableBody>
+                    <TableBody className="pb-12">
                         {table.getRowModel().rows.length ? (
                             table.getRowModel().rows.map((row) => (
                                 <TableRow key={row.id}>
