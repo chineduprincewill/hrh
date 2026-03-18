@@ -9,7 +9,7 @@ import { Spinner } from '@/components/ui/spinner'
 import { Textarea } from '@/components/ui/textarea'
 import React, { useContext, useEffect, useState } from 'react'
 import { toast } from 'sonner'
-import { fetchFormFieldCategories, updateFormField } from '../../utils/forms'
+import { fetchFormFieldCategories, fetchFormfields, getDependentFieldOptions, updateFormField } from '../../utils/forms'
 import { AppContext } from '../../context/AppContext'
 
 const NewFormField = ({ formid, setIsCreated, isEdit, setIsUpdating, reloadform, setReloadform }) => {
@@ -22,6 +22,7 @@ const NewFormField = ({ formid, setIsCreated, isEdit, setIsUpdating, reloadform,
     const [type, setType] = useState();
     const [required, setRequired] = useState();
     const [options, setOptions] = useState();
+    const [field_info, setField_info] = useState();
     const [dependent, setDependent] = useState();
     const [logic,setLogic] = useState();
     const [success, setSuccess] = useState();
@@ -32,6 +33,7 @@ const NewFormField = ({ formid, setIsCreated, isEdit, setIsUpdating, reloadform,
     //const [reloadform, setReloadform] = useState(false);
     const [categories, setCategories] = useState([]);
     const [value, setValue] = useState()
+    const [d_options, setD_options] = useState();
     
     const data = {
         formid
@@ -54,6 +56,7 @@ const NewFormField = ({ formid, setIsCreated, isEdit, setIsUpdating, reloadform,
                 type,
                 required,
                 options,
+                field_info,
                 dependent,
                 logic
             }
@@ -82,6 +85,7 @@ const NewFormField = ({ formid, setIsCreated, isEdit, setIsUpdating, reloadform,
         setDependent('');
         setType('');
         setOptions('');
+        setField_info('');
         setIsCreated(Date.now());
         setIsUpdating(true);
     }
@@ -99,6 +103,15 @@ const NewFormField = ({ formid, setIsCreated, isEdit, setIsUpdating, reloadform,
         //setTimeout(() => setReloadform(false), 2000)
     }
 
+    const dependentOptions = () => {
+        let options;
+        options = (d_options && Array.isArray(d_options) && d_options.length > 0) ? 
+        d_options.map((opt, index) => (
+            <SelectItem key={index} value={opt}>{opt}</SelectItem>
+        )) : <SelectItem value="N/A">N/A</SelectItem>
+        return options
+    }
+
     useEffect(() => {
         //fetchFormfields(data, setFormfields, setError, setLoading)
     }, [])
@@ -114,8 +127,13 @@ const NewFormField = ({ formid, setIsCreated, isEdit, setIsUpdating, reloadform,
             setDependent(isEdit?.depends_on);
             setValue(isEdit?.form_category)
             setLogic(isEdit?.logic)
+            setField_info(isEdit?.field_info)
         }
     }, [isEdit])
+
+    useEffect(() => {
+        fetchFormfields(token, { formid }, setFormfields, setError, setLoading);
+    }, [])
 
     useEffect(() => {
         reloadform && setTimeout(() => setReloadform(false), 2000)
@@ -125,7 +143,17 @@ const NewFormField = ({ formid, setIsCreated, isEdit, setIsUpdating, reloadform,
         fetchFormFieldCategories(token, data, setCategories, setError, setLoading)
     }, [reloadform])
 
-    console.log(isEdit);
+    useEffect(() => {
+        if(dependent && dependent !== 'none'){
+            const data = {
+                form_id:formid,
+                fieldName:dependent
+            }
+            getDependentFieldOptions(token, data, setD_options, setError, setLoading)
+        }
+    }, [dependent])
+
+    console.log(dependentOptions());
 
     return (
         reloadform ?
@@ -148,24 +176,6 @@ const NewFormField = ({ formid, setIsCreated, isEdit, setIsUpdating, reloadform,
                     required
                     className="w-full"
                 />
-                <Select
-                    value={type}
-                    onValueChange={setType}
-                    required
-                >
-                    <SelectTrigger className="w-full">
-                        <SelectValue placeholder="Select a field type *" />
-                    </SelectTrigger>
-                    <SelectContent>
-                        <SelectGroup>
-                            <SelectLabel>Field type</SelectLabel>
-                            <SelectItem value="text">text</SelectItem>
-                            <SelectItem value="date">date</SelectItem>
-                            <SelectItem value="number">number</SelectItem>
-                            <SelectItem value="select">select</SelectItem>
-                        </SelectGroup>
-                    </SelectContent>
-                </Select>
                 <RadioGroup 
                     defaultValue={required} 
                     className='flex items-center gap-3'
@@ -180,49 +190,77 @@ const NewFormField = ({ formid, setIsCreated, isEdit, setIsUpdating, reloadform,
                         <Label htmlFor="r2">Not required</Label>
                     </div>
                 </RadioGroup>
+                <Select
+                    value={type}
+                    onValueChange={setType}
+                    required
+                >
+                    <SelectTrigger className="w-full">
+                        <SelectValue placeholder="Select a field type *" />
+                    </SelectTrigger>
+                    <SelectContent>
+                        <SelectGroup>
+                            <SelectLabel>Field type</SelectLabel>
+                            <SelectItem value="text">text</SelectItem>
+                            <SelectItem value="date">date</SelectItem>
+                            <SelectItem value="number">number</SelectItem>
+                            <SelectItem value="decimal">decimal</SelectItem>
+                            <SelectItem value="select">select</SelectItem>
+                        </SelectGroup>
+                    </SelectContent>
+                </Select>
                 {
                     type === 'select' &&
                     <Textarea 
-                        value={options}
+                        value={options ?? ''}
                         placeholder="Enter options separated with comma ','"
                         className="w-full"
                         onChange={(e) => setOptions(e.target.value)}
                     />
-                    }
-                    <Select
-                        value={dependent}
-                        required
-                        onValueChange={setDependent}
-                    >
-                        <SelectTrigger className="w-full">
-                            <SelectValue placeholder="Select dependent if any *" />
-                        </SelectTrigger>
-                        <SelectContent>
-                            <SelectGroup>
-                                <SelectLabel>Dependent</SelectLabel>
-                                <SelectItem value="none">none</SelectItem>
-                            {
-                                formfields && formfields.length > 0 && formfields.map(fm => (
-                                    <SelectItem key={fm.id} value={fm.label}>{fm.label}</SelectItem>
-                                ))
-                            }
-                            </SelectGroup>
-                        </SelectContent>
-                    </Select>
+                }
+                <Textarea 
+                    value={field_info ?? ''}
+                    placeholder="Enter field guide or information (Optional)"
+                    className="w-full"
+                    onChange={(e) => setField_info(e.target.value)}
+                />
+                <Select
+                    value={dependent}
+                    required
+                    onValueChange={setDependent}
+                >
+                    <SelectTrigger className="w-full">
+                        <SelectValue placeholder="Select dependent if any *" />
+                    </SelectTrigger>
+                    <SelectContent>
+                        <SelectGroup>
+                            <SelectLabel>Dependent</SelectLabel>
+                            <SelectItem value="none">none</SelectItem>
+                        {
+                            formfields && formfields.length > 0 && formfields.map(fm => (
+                                <SelectItem key={fm.id} value={fm.fieldName}>{fm.label}</SelectItem>
+                            ))
+                        }
+                        </SelectGroup>
+                    </SelectContent>
+                </Select>
                 {
-                    dependent && dependent !== 'none' &&
+                    dependent && dependent !== 'none'
+                    &&
                     <Select
+                        value={logic ?? ''}
                         required
                         onValueChange={setLogic}
                     >
                         <SelectTrigger className="w-full">
-                            <SelectValue placeholder="Logic value" />
+                            <SelectValue placeholder={loading ? "loading..." : "Dependent value"} />
                         </SelectTrigger>
                         <SelectContent>
                             <SelectGroup>
-                                <SelectLabel>Logic value</SelectLabel>
-                                <SelectItem value="value one">value one</SelectItem>
-                                <SelectItem value="value two">value two</SelectItem>
+                                <SelectLabel>Dependent value</SelectLabel>
+                            {
+                                dependentOptions()
+                            }
                             </SelectGroup>
                         </SelectContent>
                     </Select>

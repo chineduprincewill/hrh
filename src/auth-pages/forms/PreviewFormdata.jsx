@@ -7,11 +7,11 @@ const PreviewFormdata = ({ formdata }) => {
             <DialogHeader>
                 <DialogTitle>Preview</DialogTitle>
                 <DialogDescription>
-                Confirm <span className='font-bold'> form information</span>. Click save when you&apos;re
+                Confirm <span className='font-bold'> form information</span>. Click outside to close when you&apos;re
                 done.
                 </DialogDescription>
             </DialogHeader>
-            <div className='w-full md:flex md:flex-wrap md:items-center md:justify-between'>
+            <div className='w-full md:flex md:flex-wrap md:items-center md:justify-between max-h-[80vh] overflow-auto'>
             {
                 formdata && Object.entries(formdata).map(([key, value], index) => (
                     <div 

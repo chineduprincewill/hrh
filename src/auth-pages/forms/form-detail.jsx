@@ -76,7 +76,7 @@ const FormDetail = () => {
             <div className='w-full overflow-hidden'>
             {
                 active === 'records' ? 
-                    <div className='w-full overflow-x-scroll'>
+                    <div className='w-full'>
                         <FormRecords formid={id} perms={perms} setEditinfo={setEditinfo} setRecorded={setRecorded} /> 
                     </div>
                     : 

@@ -93,3 +93,16 @@ export const formatDateAndTime = (dt) => {
   
     return `${monthNames[month]} ${day}, ${year} ${hour}:${minutes}:${seconds}`;
 }
+
+export const shouldRenderField = (field, formData) => {
+    // If no dependency, always render
+    if (field.depends_on === 'none') return true;
+  
+    const dependentKey = field.depends_on;
+  
+    // If the dependent field hasn't been filled yet
+    if (!(dependentKey in formData)) return false;
+  
+    // Check if value matches the logic condition
+    return formData[dependentKey] === field.logic;
+}

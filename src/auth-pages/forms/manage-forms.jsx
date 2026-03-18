@@ -42,6 +42,38 @@ const ManageForms = () => {
 
     const columns = [
         {
+            id: 'action',
+            cell: ({ row }) => {
+              const frm = row.original; 
+              const [isOpen, setIsOpen] = useState(false);
+              //const [assignOpen, setAssignOpen] = useState(false);
+    
+              return (
+                <div className="w-full flex items-center gap-3">
+                    <Dialog>
+                        <DialogTrigger asChild>
+                            <Edit 
+                                className="h-4 w-4 cursor-pointer" 
+                            />
+                        </DialogTrigger>
+                        <DialogContent>
+                            <DialogTitle></DialogTitle>
+                            <NewForm frm={frm} />
+                        </DialogContent>
+                    </Dialog>
+                    <Dialog>
+                        <DialogTrigger asChild>
+                            <ListFilterPlus 
+                                className="h-4 w-4 cursor-pointer" 
+                            />
+                        </DialogTrigger>
+                        <FormFieldManager frm={frm} />
+                    </Dialog>
+                </div>
+              );
+            },
+        },
+        {
             accessorKey: 'title',
             header: 'Subject',
             enableSorting: true,
@@ -94,38 +126,6 @@ const ManageForms = () => {
             enableSorting: true,
             enableColumnFilter: true,
         },
-        {
-            id: 'action',
-            cell: ({ row }) => {
-              const frm = row.original; 
-              const [isOpen, setIsOpen] = useState(false);
-              //const [assignOpen, setAssignOpen] = useState(false);
-    
-              return (
-                <div className="w-full flex items-center gap-3">
-                    <Dialog>
-                        <DialogTrigger asChild>
-                            <Edit 
-                                className="h-4 w-4 cursor-pointer" 
-                            />
-                        </DialogTrigger>
-                        <DialogContent>
-                            <DialogTitle></DialogTitle>
-                            <NewForm frm={frm} />
-                        </DialogContent>
-                    </Dialog>
-                    <Dialog>
-                        <DialogTrigger asChild>
-                            <ListFilterPlus 
-                                className="h-4 w-4 cursor-pointer" 
-                            />
-                        </DialogTrigger>
-                        <FormFieldManager frm={frm} />
-                    </Dialog>
-                </div>
-              );
-            },
-        },
     ];
 
     useEffect(() => {
@@ -157,7 +157,7 @@ const ManageForms = () => {
                     </Dialog>
                 </div>
             </div>
-            <div className='w-full'>
+            <div className='w-full overflow-hidden'>
             {
                 loading || !forms ? <SkeletonComponent /> :
                 <DataTable data={forms} columns={columns} filterArrs={datafilters} />

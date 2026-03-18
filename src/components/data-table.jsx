@@ -56,13 +56,67 @@ const DataTable = ({ data, columns, filterArrs }) => {
                 />
             </div>
             {/** Table */}
+            {/** Pagination Controls */}
+            <div className='flex items-center justify-between'>
+                <div className='flex items-center space-x-2'>
+                    <span className='text-sm text-gray-600'>
+                        Page {table.getState().pagination.pageIndex + 1} of{' '}
+                        {table.getPageCount()}
+                    </span>
+                    <select
+                        value={table.getState().pagination.pageSize}
+                        onChange={(e) => table.setPageSize(Number(e.target.value))}
+                        className='border rounded-md p-1 text-sm bg-transparent'
+                    >
+                        {[5, 10, 20, 30, 50].map((pageSize) => (
+                            <option key={pageSize} value={pageSize} className='bg-muted'>
+                                Show {pageSize}
+                            </option>
+                        ))}
+                    </select>
+                </div>
+                <div className='flex items-center space-x-2'>
+                    <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => table.firstPage()}
+                        disabled={!table.getCanPreviousPage()}
+                    >
+                        <ChevronsLeft />
+                    </Button>
+                    <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => table.previousPage()}
+                        disabled={!table.getCanPreviousPage()}
+                    >
+                        <ChevronLeft />
+                    </Button>
+                    <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => table.nextPage()}
+                        disabled={!table.getCanNextPage()}
+                    >
+                        <ChevronRight />
+                    </Button>
+                    <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => table.lastPage()}
+                        disabled={!table.getCanNextPage()}
+                    >
+                        <ChevronsRight />
+                    </Button>
+                </div>
+            </div>
             <div className='rounded-md overflow-x-scroll md:overflow-hidden'>
                 <Table>
                     <TableHeader>
                         {table.getHeaderGroups().map((headerGroup) => {
                             return (<TableRow key={headerGroup.id}>
                                 {headerGroup.headers.map((header) => (
-                                    <TableHead key={header.id} className="gradient-title">
+                                    <TableHead key={header.id} className="gradient-title min-h-12 min-w-40 text-sm">
                                         {header.isPlaceholder
                                             ? null
                                             : flexRender(
@@ -74,7 +128,7 @@ const DataTable = ({ data, columns, filterArrs }) => {
                             </TableRow>)
                         })}
                     </TableHeader>
-                    <TableBody className="pb-12">
+                    <TableBody>
                         {table.getRowModel().rows.length ? (
                             table.getRowModel().rows.map((row) => (
                                 <TableRow key={row.id}>

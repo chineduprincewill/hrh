@@ -15,6 +15,7 @@ import { toast } from 'sonner';
 import { Spinner } from '../../components/ui/spinner';
 import { Dialog, DialogContent, DialogHeader, DialogTrigger } from '../../components/ui/dialog';
 import PreviewFormdata from './PreviewFormdata';
+import { shouldRenderField } from '../../utils/functions';
 
 const FormEntry = ({ formid, uniqueid, setActive, editinfo }) => {
     const { token, refreshRecord } = useContext(AppContext);
@@ -27,6 +28,7 @@ const FormEntry = ({ formid, uniqueid, setActive, editinfo }) => {
     const [categories, setCategories] = useState();
     const [currentCategory, setCurrentCategory] = useState();
     const [categoryIndex, setCategoryIndex] = useState(parseInt(0));
+    const [fielderrors, setFielderrors] = useState({});
 
     useEffect(() => {
         if (editinfo) {
@@ -34,11 +36,53 @@ const FormEntry = ({ formid, uniqueid, setActive, editinfo }) => {
         }
     }, [editinfo]);
 
-    const handleInputChange = (name, value) => {
+    const handleKeyDown = (e, field) => {
+        if (field.type !== "number" && field.type !== "decimal") return;
+      
+        const allowedKeys = [
+          "Backspace",
+          "Delete",
+          "ArrowLeft",
+          "ArrowRight",
+          "Tab"
+        ];
+      
+        // Allow control keys
+        if (allowedKeys.includes(e.key)) return;
+      
+        // Block non-numeric keys
+        if ((!/^[0-9]$/.test(e.key)) && (!/^[0-9.]$/.test(e.key))) {
+          e.preventDefault();
+        }
+    };
+
+    const handleInputChange = (fld, name, value) => {
+
+        console.log(fld.type);
+        // Apply conditional validation
+        if (fld.type === "number") {
+            value = value.replace(/[^0-9]/g, ""); // digits only
+        }
+
+        if (fld.type === "decimal") {
+            value = value.replace(/[^0-9.]/g, ""); // allow decimal
+        }
+
         setFormdata({
             ...formdata,
             [name]: value
         });
+
+        // Validate this field immediately
+        const error = validateField(fld, value, {
+            ...formdata,
+            [fld.fieldName]: value
+        });
+
+        setFielderrors((prev) => ({
+            ...prev,
+            [fld.fieldName]: error
+        }));
     }
 
     const navigateForward = () => {
@@ -51,6 +95,35 @@ const FormEntry = ({ formid, uniqueid, setActive, editinfo }) => {
         setCategoryIndex(ci);
     }
 
+    function validateField(field, value, formData) {
+        // Skip hidden fields
+        if (!shouldRenderField(field, formData)) return null;
+      
+        // Required validation
+        if (field.required && (!value || value.trim() === "")) {
+          return `${field.label || field.fieldName} is required`;
+        }
+      
+        return null;
+    }
+
+    const validateForm = () => {
+        let newErrors = {};
+      
+        formfields.forEach((field) => {
+          const value = formdata[field.fieldName];
+          const error = validateField(field, value, formdata);
+      
+          if (error) {
+            newErrors[field.name] = error;
+          }
+        });
+      
+        setFielderrors(newErrors);
+      
+        return Object.keys(newErrors).length === 0;
+    };
+
     const handleSubmit = () => {
         const data = {
             formid,
@@ -62,7 +135,17 @@ const FormEntry = ({ formid, uniqueid, setActive, editinfo }) => {
             data.id = editinfo?.id;
         }
         console.log(data);
-        updateFormdata(token, data, setSuccess, setError, setUpdating);
+
+        if(validateForm()){
+            updateFormdata(token, data, setSuccess, setError, setUpdating);
+        }
+        else{
+            console.log(fielderrors);
+            toast.error(JSON.stringify(JSON.stringify(fielderrors)), {
+                className: "!bg-red-700 !text-white !border-white !font-bold",
+                descriptionClassName: "!text-red-700",
+            });
+        }
     }
 
     if(success){
@@ -96,6 +179,8 @@ const FormEntry = ({ formid, uniqueid, setActive, editinfo }) => {
         fetchFormFieldCategories(token, { formid }, setCategories, setError, setFetching)
     }, [])
 
+    //console.log(formfields, formdata)
+
     return (
         <div className='w-full'>
             {fetching || !formfields ? <SkeletonComponent /> :
@@ -104,9 +189,9 @@ const FormEntry = ({ formid, uniqueid, setActive, editinfo }) => {
                     e.preventDefault();
                     handleSubmit();
                   }} 
-                  className='w-full rounded-sm bg-background grid md:flex md:flex-wrap md:items-center gap-4 p-6'
+                  className='w-full rounded-sm bg-background grid md:flex md:flex-wrap md:items-center gap-4 px-6 py-2'
                 >
-                    <div className='w-full grid gap-2 md:flex md:items-center md:justify-between py-1 my-4 border-b'>
+                    <div className='w-full grid gap-2 md:flex md:items-center md:justify-between py-1 my-1 border-b'>
                         <span className='text-xl font-extralight'>{currentCategory ? currentCategory : (
                             categories && categories[0]?.value
                         )}</span>
@@ -123,24 +208,26 @@ const FormEntry = ({ formid, uniqueid, setActive, editinfo }) => {
                             />
                         </div>
                     </div>
-                    {formfields.map((field) => (
-                        <div key={field.id} className={`w-full md:w-[48%] ${field?.form_category === currentCategory || (!currentCategory && categories && field?.form_category === categories[0]?.value) ? 'grid' : 'hidden'}`}>
+                    {formfields.map((field) => {
+                        if (!shouldRenderField(field, formdata)) return null;
+
+                        return <div key={field.id} className={`w-full md:w-[48%] ${field?.form_category === currentCategory || (!currentCategory && categories && field?.form_category === categories[0]?.value) ? 'grid' : 'hidden'}`}>
                             <Label className="block text-sm font-medium mb-2">
                                 {field.label}
                                 {field.required && <span className="text-destructive ml-1">*</span>}
+                                {field.field_info && <span className="ml-2 text-xs text-foreground/40">{field.field_info}</span>}
                             </Label>
-
                             {field.type === 'textarea' ? (
                                 <Textarea 
                                     placeholder={field.placeholder}
-                                    onChange={(e) => handleInputChange(field.fieldName, e.target.value)}
+                                    onChange={(e) => handleInputChange(field, field.fieldName, e.target.value)}
                                     name={field.fieldName}
                                     value={formdata[field.fieldName] || ''} // Changed from editinfo
                                 />
                             ) : field.type === 'select' && field.options ? (
                                 <Select
                                     value={formdata[field.fieldName] || ''} // Changed from editinfo
-                                    onValueChange={(value) => handleInputChange(field.fieldName, value)}
+                                    onValueChange={(value) => handleInputChange(field, field.fieldName, value)}
                                 >
                                     <SelectTrigger className="w-full">
                                         <SelectValue placeholder={field.placeholder} />
@@ -161,7 +248,7 @@ const FormEntry = ({ formid, uniqueid, setActive, editinfo }) => {
                                         name={field.fieldName}  
                                         checked={formdata[field.fieldName] || false} // Changed from value
                                         className="rounded"
-                                        onChange={(e) => handleInputChange(field.fieldName, e.target.checked)}
+                                        onChange={(e) => handleInputChange(field, field.fieldName, e.target.checked)}
                                     />
                                     <span className="text-sm">{field.label}</span>
                                 </label>
@@ -186,7 +273,7 @@ const FormEntry = ({ formid, uniqueid, setActive, editinfo }) => {
                                             fromYear={1900}
                                             toYear={new Date().getFullYear() + 30} // 10 years in future
                                             selected={formdata[field.fieldName] ? new Date(formdata[field.fieldName]) : undefined}
-                                            onSelect={(date) => handleInputChange(field.fieldName, date)}    
+                                            onSelect={(date) => handleInputChange(field, field.fieldName, date)}    
                                         />
                                     </PopoverContent>
                                 </Popover>
@@ -198,11 +285,20 @@ const FormEntry = ({ formid, uniqueid, setActive, editinfo }) => {
                                     placeholder={`Enter ${field.label}`}
                                     required={field.required}
                                     className="w-full"
-                                    onChange={(e) => handleInputChange(field.fieldName, e.target.value)}
+                                    onChange={(e) => handleInputChange(field, field.fieldName, e.target.value)}
+                                    onKeyDown={(e) => handleKeyDown(e, field)}
+                                    inputMode={(field.type === 'number' || field.type === 'decimal') && "numeric"}
+                                    pattern={(field.type === 'number' || field.type === 'decimal') && "[0-9]*"}
                                 />
                             )}
+                            {/* ✅ Error Message */}
+                            {fielderrors[field.fieldName] && (
+                                <div className='px-2 py-1 rounded-sm text-red-600 bg-red-300 dark:bg-red-950'>
+                                {fielderrors[field.fieldName]}
+                                </div>
+                            )}
                         </div>
-                    ))}
+                    })}
                     <div className='w-full flex items-center gap-4 justify-end'>
                     {
                         categories && categoryIndex === (categories.length - 1) &&

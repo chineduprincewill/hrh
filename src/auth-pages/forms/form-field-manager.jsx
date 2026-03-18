@@ -58,7 +58,7 @@ const FormFieldManager = ({ frm }) => {
     }
 
     return (
-        <DialogContent className="w-[80vw] max-h-[95vh] overflow-y-auto !max-w-none">
+        <DialogContent className="w-[90vw] max-h-[95vh] overflow-y-auto !max-w-none">
             <DialogHeader>
                 <DialogTitle>Manage <span className='text-brand'>{frm.title}</span> fields</DialogTitle>
             </DialogHeader>
