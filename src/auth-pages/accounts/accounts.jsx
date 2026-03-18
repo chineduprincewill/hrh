@@ -14,43 +14,9 @@ const Accounts = () => {
     const [roles, setRoles] = useState()
     const [error, setError] = useState();
     const [loading, setLoading] = useState(false);
+    const [role, setRole] = useState()
 
     const columns = [
-        {
-            accessorKey: 'fullname',
-            header: 'Full name',
-            enableSorting: true,
-        },
-        {
-            accessorKey: 'email',
-            header: 'Email',
-            enableSorting: true,
-            enableColumnFilter: true,
-        },
-        {
-            accessorKey: 'role',
-            header: 'Role',
-            enableSorting: true,
-            enableColumnFilter: true,
-        },
-        {
-            accessorKey: 'directorate',
-            header: 'Directorate',
-            enableSorting: true,
-            enableColumnFilter: true,
-        },
-        {
-            accessorKey: 'unit',
-            header: 'Unit',
-            enableSorting: true,
-            enableColumnFilter: true,
-        },
-        {
-            accessorKey: 'office_location',
-            header: 'Office location',
-            enableSorting: true,
-            enableColumnFilter: true,
-        },
         {
             id: 'actions',
             cell: ({ row }) => {
@@ -83,6 +49,63 @@ const Accounts = () => {
               );
             },
         },
+        {
+            accessorKey: 'fullname',
+            header: 'Full name',
+            enableSorting: true,
+        },
+        {
+            accessorKey: 'email',
+            header: 'Email',
+            enableSorting: true,
+            enableColumnFilter: true,
+        },
+        {
+            accessorKey: 'role',
+            header: 'Role',
+            cell: ({ row }) => {
+                const acct = row.original; 
+                //const [isOpen, setIsOpen] = useState(false);
+                //const [assignOpen, setAssignOpen] = useState(false);
+      
+                return (
+                    <div className="w-full flex items-center gap-0">
+                        <div 
+                            className={`max-w-max rounded-l-full px-2 pb-1 text-sm ${acct?.role === 'user' ? 'bg-accent hover:bg-accent/20 cursor-pointer' : 'bg-foreground/20 hover:bg-foreground/40'}`}
+                            onClick={() => acct?.role === 'user' && updateRole(acct)}
+                        >
+                            user
+                        </div>
+                        <div 
+                            className={`max-w-max rounded-r-full px-2 pb-1 text-sm ${acct?.role === 'admin' ? 'bg-accent hover:bg-accent/20 cursor-pointer' : 'bg-foreground/20 hover:bg-foreground/40'}`}
+                            onClick={() => acct?.role === 'admin' && updateRole(acct)}
+                        >
+                            admin
+                        </div>
+                    </div>
+                );
+            },
+            enableSorting: true,
+            enableColumnFilter: true,
+        },
+        {
+            accessorKey: 'directorate',
+            header: 'Directorate',
+            enableSorting: true,
+            enableColumnFilter: true,
+        },
+        {
+            accessorKey: 'unit',
+            header: 'Unit',
+            enableSorting: true,
+            enableColumnFilter: true,
+        },
+        {
+            accessorKey: 'office',
+            header: 'Office location',
+            enableSorting: true,
+            enableColumnFilter: true,
+        },
     ];
 
     const datafilters = [
@@ -108,9 +131,18 @@ const Accounts = () => {
         }*/
     ]
 
+    const updateRole = (acc) => {
+        let updaterole = acc?.role === 'admin' ? 'user' : 'admin';
+        if(window.confirm(`Are you sure you want to switch ${acc?.fullname} role from ${acc?.role} to ${updaterole}`)){
+            alert('Role updated!')
+        }
+    }
+
     useEffect(() => {
         fetchRoles(token, setRoles, setError, setLoading)
     }, [record])
+
+    console.log(roles);
 
     return (
         <div className='w-full p-4 space-y-8'>

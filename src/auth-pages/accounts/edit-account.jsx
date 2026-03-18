@@ -7,7 +7,7 @@ import { directorates } from '../../lib/data'
 import { AppContext } from '../../context/AppContext'
 import { Spinner } from '@/components/ui/spinner'
 import { toast } from 'sonner'
-import { updateUser } from '../../utils/users'
+import { fetchOffices, updateUser } from '../../utils/users'
 
 const EditAccount = ({ acct }) => {
 
@@ -15,11 +15,13 @@ const EditAccount = ({ acct }) => {
     const [selectedRole, setSelectedRole] = useState(acct.role);
     const [selectedDirectorate, setSelectedDirectorate] = useState(acct.directorate);
     const [selectedUnit, setSelectedUnit] = useState(acct.unit);
-    const [office_location, setOffice_location] = useState(acct.office_location);
+    const [office_location, setOffice_location] = useState(acct.office);
     const [units, setUnits] = useState([]);
     const [success, setSuccess] = useState();
     const [error, setError] = useState();
     const [updating, setUpdating] = useState(false);
+    const [offices, setOffices] = useState();
+    const [fetching, setFetching] = useState(false);
 
     const getDirectorateUnits = () => {
         let filteredUnits;
@@ -72,6 +74,10 @@ const EditAccount = ({ acct }) => {
         setUnits(getDirectorateUnits());
     }, [selectedDirectorate])
 
+    useEffect(() => {
+        fetchOffices(token, setOffices, setError, setFetching)
+    }, [])
+
 
     return (
         <DialogContent>
@@ -82,94 +88,92 @@ const EditAccount = ({ acct }) => {
                 done.
                 </DialogDescription>
             </DialogHeader>
-            <div className="grid gap-4">
+            <div className="grid gap-4 mb-4">
                 <div className="grid gap-3">
-                <Label className="font-light text-lg">{acct.fullname}</Label>
+                    <Label className="font-light text-lg">{acct.fullname}</Label>
                 </div>
                 <div className="grid gap-3">
-                <Label htmlFor="role-1">Role</Label>
-                <Select
-                    value={selectedRole} // Reflects the current state
-                    onValueChange={setSelectedRole} // Updates the state on selection
-                    required
-                >
-                    <SelectTrigger className="w-full">
-                        <SelectValue placeholder="Select a role" />
-                    </SelectTrigger>
-                    <SelectContent>
-                        <SelectGroup>
-                        <SelectLabel>Role</SelectLabel>
-                        <SelectItem value="user">user</SelectItem>
-                        <SelectItem value="admin">admin</SelectItem>
-                        </SelectGroup>
-                    </SelectContent>
-                </Select>
+                    <Label htmlFor="role-1">Role</Label>
+                    <Select
+                        value={selectedRole} // Reflects the current state
+                        onValueChange={setSelectedRole} // Updates the state on selection
+                        required
+                    >
+                        <SelectTrigger className="w-full">
+                            <SelectValue placeholder="Select a role" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectGroup>
+                            <SelectLabel>Role</SelectLabel>
+                            <SelectItem value="user">user</SelectItem>
+                            <SelectItem value="admin">admin</SelectItem>
+                            </SelectGroup>
+                        </SelectContent>
+                    </Select>
                 </div>
                 <div className="grid gap-3">
-                <Label htmlFor="role-1">Directorate</Label>
-                <Select
-                    value={selectedDirectorate} // Reflects the current state
-                    onValueChange={setSelectedDirectorate} // Updates the state on selection
-                >
-                    <SelectTrigger className="w-full">
-                        <SelectValue placeholder="Select a role" />
-                    </SelectTrigger>
-                    <SelectContent>
-                        <SelectGroup>
-                        <SelectLabel>Directorate</SelectLabel>
-                        {
-                            directorates.map( dir => (
-                                <SelectItem key={dir.id} value={dir.title}>{dir.title}</SelectItem>
-                            ))
-                        }
-                        </SelectGroup>
-                    </SelectContent>
-                </Select>
+                    <Label htmlFor="role-1">Directorate</Label>
+                    <Select
+                        value={selectedDirectorate} // Reflects the current state
+                        onValueChange={setSelectedDirectorate} // Updates the state on selection
+                    >
+                        <SelectTrigger className="w-full">
+                            <SelectValue placeholder="Select a role" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectGroup>
+                            <SelectLabel>Directorate</SelectLabel>
+                            {
+                                directorates.map( dir => (
+                                    <SelectItem key={dir.id} value={dir.title}>{dir.title}</SelectItem>
+                                ))
+                            }
+                            </SelectGroup>
+                        </SelectContent>
+                    </Select>
                 </div>
                 <div className="grid gap-3">
-                <Label htmlFor="role-1">Unit</Label>
-                <Select
-                    value={selectedUnit} // Reflects the current state
-                    onValueChange={setSelectedUnit} // Updates the state on selection
-                >
-                    <SelectTrigger className="w-full">
-                        <SelectValue placeholder="Select a unit" />
-                    </SelectTrigger>
-                    <SelectContent>
-                        <SelectGroup>
-                        <SelectLabel>Unit</SelectLabel>
-                        {
-                            units && units.length > 0 && units.map( un => (
-                                <SelectItem key={un.id} value={un.title}>{un.title}</SelectItem>
-                            ))
-                        }
-                        </SelectGroup>
-                    </SelectContent>
-                </Select>
-                <div className="grid gap-3">
-                <Label htmlFor="role-1">Office location</Label>
-                <Select
-                    value={office_location} // Reflects the current state
-                    onValueChange={setOffice_location} // Updates the state on selection
-                    required
-                >
-                    <SelectTrigger className="w-full">
-                        <SelectValue placeholder="Select a office location" />
-                    </SelectTrigger>
-                    <SelectContent>
-                        <SelectGroup>
-                        <SelectLabel>Office location</SelectLabel>
-                        <SelectItem value="Abuja">Abuja</SelectItem>
-                        <SelectItem value="Lagos">Lagos</SelectItem>
-                        <SelectItem value="Benue">Benue</SelectItem>
-                        <SelectItem value="Plateau">Plateau</SelectItem>
-                        <SelectItem value="Ogun">Ogun</SelectItem>
-                        <SelectItem value="Oyo">Oyo</SelectItem>
-                        <SelectItem value="Ondo">Ondo</SelectItem>
-                        </SelectGroup>
-                    </SelectContent>
-                </Select>
+                    <Label htmlFor="role-1">Unit</Label>
+                    <Select
+                        value={selectedUnit} // Reflects the current state
+                        onValueChange={setSelectedUnit} // Updates the state on selection
+                    >
+                        <SelectTrigger className="w-full">
+                            <SelectValue placeholder="Select a unit" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectGroup>
+                            <SelectLabel>Unit</SelectLabel>
+                            {
+                                units && units.length > 0 && units.map( un => (
+                                    <SelectItem key={un.id} value={un.title}>{un.title}</SelectItem>
+                                ))
+                            }
+                            </SelectGroup>
+                        </SelectContent>
+                    </Select>
                 </div>
+                <div className="grid gap-3 overflow-x-hidden">
+                    <Label htmlFor="role-1">Office location</Label>
+                    <Select
+                        value={office_location} // Reflects the current state
+                        onValueChange={setOffice_location} // Updates the state on selection
+                        required
+                    >
+                        <SelectTrigger className="w-full">
+                            <SelectValue placeholder="Select an office location" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectGroup>
+                            <SelectLabel>Office location</SelectLabel>
+                            {
+                                offices && offices.map(offc => (
+                                <SelectItem className="text-sm" key={offc?.id} value={offc?.office}>{offc?.office}, {offc?.lganame}, {offc?.state}</SelectItem>
+                                ))
+                            } 
+                            </SelectGroup>
+                        </SelectContent>
+                    </Select>
                 </div>
             </div>
             <DialogFooter>
