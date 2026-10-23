@@ -11,8 +11,8 @@ const CountdownComponent = () => {
 
     useEffect(() => {
     // Set launch date to 90 days from now (only once)
-    const launchDate = new Date('2026-02-14 00:00:00');
-    launchDate.setDate(launchDate.getDate() + 10);
+    const launchDate = new Date('2026-03-23 00:00:00');
+    launchDate.setDate(launchDate.getDate() + 19);
 
     const calculateCountdown = () => {
         const now = new Date().getTime();

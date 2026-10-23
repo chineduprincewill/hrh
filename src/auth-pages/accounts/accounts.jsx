@@ -71,14 +71,14 @@ const Accounts = () => {
                 return (
                     <div className="w-full flex items-center gap-0">
                         <div 
-                            className={`max-w-max rounded-l-full px-2 pb-1 text-sm ${acct?.role === 'user' ? 'bg-accent hover:bg-accent/20 cursor-pointer' : 'bg-foreground/20 hover:bg-foreground/40'}`}
-                            onClick={() => acct?.role === 'user' && updateRole(acct)}
+                            className={`max-w-max rounded-l-full px-2 pb-1 text-sm ${acct?.role === 'user' ? 'bg-accent' : 'bg-foreground/20 hover:bg-foreground/40 cursor-pointer'}`}
+                            onClick={() => acct?.role !== 'user' && updateRole(acct)}
                         >
                             user
                         </div>
                         <div 
-                            className={`max-w-max rounded-r-full px-2 pb-1 text-sm ${acct?.role === 'admin' ? 'bg-accent hover:bg-accent/20 cursor-pointer' : 'bg-foreground/20 hover:bg-foreground/40'}`}
-                            onClick={() => acct?.role === 'admin' && updateRole(acct)}
+                            className={`max-w-max rounded-r-full px-2 pb-1 text-sm ${acct?.role === 'admin' ? 'bg-accent' : 'bg-foreground/20 hover:bg-foreground/40 cursor-pointer'}`}
+                            onClick={() => acct?.role !== 'admin' && updateRole(acct)}
                         >
                             admin
                         </div>

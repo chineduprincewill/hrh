@@ -21,6 +21,7 @@ import ManageForms from "./auth-pages/forms/manage-forms";
 import UserForms from "./auth-pages/forms/user-forms";
 import FormDetail from "./auth-pages/forms/form-detail";
 import UserRecords from "./auth-pages/user-records/user-records";
+import MedgemmaAi from "./public/medgemma-ai";
 
 function App() {
 
@@ -46,6 +47,7 @@ function App() {
               <Routes>
                 <Route exact path="/" element={<Login />} />
                 <Route exact path="/signup" element={<SignUp />} />
+                <Route exact path="/ai" element={<MedgemmaAi />} />
                 <Route element={<ProtectedRoute><DefaultLayout /></ProtectedRoute>}>
                     <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
                     <Route path="/accounts" element={<ProtectedRoute><Accounts /></ProtectedRoute>} />
@@ -55,6 +57,7 @@ function App() {
                     <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
                     <Route path="/activity-log" element={<ProtectedRoute><Log /></ProtectedRoute>} />
                     <Route path="/records" element={<ProtectedRoute><UserRecords /></ProtectedRoute>} />
+                    <Route path="/reports" element={<ProtectedRoute><Reports /></ProtectedRoute>} />
                   </Route>
               </Routes>
             </Router>

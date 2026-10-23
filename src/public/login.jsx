@@ -66,7 +66,7 @@ const Login = () => {
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-background">
+        <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-accent to-background">
             <div className="w-full grid grid-cols-1 lg:grid-cols-2 min-h-screen">
                 {/* Left Banner */}
                 <LeftBanner />
@@ -75,8 +75,8 @@ const Login = () => {
                 <div className="flex flex-col items-center justify-center p-6 sm:p-8 lg:p-12">
                     <div className="w-full max-w-md">
                         <div className="mb-8">
-                        <h1 className="text-3xl font-bold text-brand mb-2">Sign In</h1>
-                        <p className="text-muted-foreground">Enter your credentials to access your account</p>
+                        <h1 className="text-3xl font-bold mb-2">Sign In</h1>
+                        <p className="font-extralight">Enter your credentials to access your account</p>
                         </div>
                         {/* Error Message */}
                         {error && (
